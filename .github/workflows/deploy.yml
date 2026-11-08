@@ -51,20 +51,13 @@ jobs:
           path: source
           ssh-key: ${{ secrets.PAGES_SOURCE_READ_KEY }}
 
-      - name: Checkout private source repository
-        uses: actions/checkout@v4
-        with:
-          repository: fuck-algorithm/leetcode-239-sliding-window-maximum
-          path: source
-          ssh-key: ${{ secrets.PAGES_SOURCE_READ_KEY }}
-
       - name: Fetch source repository Star count
         env:
           GH_TOKEN: ${{ secrets.PAGES_SOURCE_READ_TOKEN }}
         run: |
           count=$(gh api repos/fuck-algorithm/leetcode-239-sliding-window-maximum --jq .stargazers_count)
-          printf '{"stargazers_count":%s}\n' "$count" > public/data/github-stars.json
-          cp public/data/github-stars.json source/public/data/github-stars.json
+          printf '{"stargazers_count":%s}\n' "$count" > source/public/data/github-stars.json
+          cp source/public/data/github-stars.json public/data/github-stars.json
 
       - name: Build site
         run: npm run build
