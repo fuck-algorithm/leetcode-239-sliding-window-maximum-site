@@ -59,7 +59,7 @@ function makeFrame(nums: number[], k: number, snapshot: Snapshot): CanvasFrame {
   const nodes: CanvasNode[] = nums.map((value, index) => ({
     id: `a${index}`, label: String(value), x: START_X + index * SLOT, y: ARRAY_Y,
     badge: String(index), sublabel: `nums[${index}]`,
-    status: index === compared || index === removed || (index === i && action === 'compare') ? 'compare' : index === i || (action === 'init' && index === 0) ? 'current' : index < i ? 'visited' : 'idle', radius: 27
+    status: index === compared || index === removed ? 'compare' : index === i || (action === 'init' && index === 0) ? 'current' : index < i ? 'visited' : 'idle', radius: 27
   }));
   let comparedQueueId: string | undefined;
   if (action === 'compare' && compared !== undefined) {
@@ -73,6 +73,12 @@ function makeFrame(nums: number[], k: number, snapshot: Snapshot): CanvasFrame {
   }));
   const queue = createQueue({ id: 'deque', x: QUEUE_X, y: 125, items: queueItems, capacity: Math.max(6, Math.min(nums.length, 9)), width: 720, height: 120, title: '单调递减双端队列：队首 → 队尾', emptyText: '空队列：等待候选索引' });
   nodes.push(...queue.nodes);
+  const maxIndex = deque[0];
+  nodes.push({
+    id: 'max-slot', label: maxIndex === undefined ? 'null' : String(nums[maxIndex]), x: 1010, y: 400,
+    kind: maxIndex === undefined ? 'null' : 'normal', badge: 'max', sublabel: maxIndex === undefined ? '尚无候选' : `nums[${maxIndex}]`,
+    status: action === 'match' || action === 'done' ? 'done' : maxIndex === undefined ? 'idle' : 'visited', radius: 28
+  });
   const answerNodes: CanvasNode[] = result.map((value, index) => ({
     id: `r${index}`, label: String(value), x: START_X + index * SLOT, y: 650, badge: String(index), sublabel: `窗口 ${index + 1}`, status: 'done', radius: 23
   }));

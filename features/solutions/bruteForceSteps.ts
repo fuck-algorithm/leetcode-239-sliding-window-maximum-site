@@ -42,10 +42,11 @@ function buildFrame(input: SlidingWindowInput, event: Event): CanvasFrame {
     const inWindow = event.left <= index && index <= event.right;
     const isFocus = index === event.j;
     const isBest = index === event.bestIndex && event.action !== 'init';
-    const status = isFocus && event.action === 'compare' && !isBest ? 'current' : isFocus || (event.action === 'init' && index === 0) ? 'current' : isBest ? 'done' : inWindow ? 'visited' : 'idle';
+    const status = isFocus || ((event.action === 'init' || event.action === 'done') && index === 0) ? 'current' : isBest ? 'done' : inWindow ? 'visited' : 'idle';
     return { id: `a${index}`, label: String(value), x: ARRAY_X + index * SLOT, y: ARRAY_Y, badge: String(index), sublabel: `nums[${index}]`, status, radius: 27 };
   });
   if (event.bestIndex >= 0) nodes.push({ id: 'best', label: String(nums[event.bestIndex]), x: 1050, y: 190, badge: 'max', sublabel: `nums[${event.bestIndex}]`, status: event.action === 'record' || event.action === 'done' ? 'done' : 'visited', radius: 30 });
+  else nodes.push({ id: 'best-null', label: 'null', x: 1050, y: 190, kind: 'null', badge: 'max', sublabel: '当前没有候选最大值', status: 'idle', radius: 30 });
   nodes.push(...event.result.map((value, index) => ({ id: `r${index}`, label: String(value), x: ARRAY_X + index * SLOT, y: 640, badge: String(index), sublabel: `窗口 ${index + 1}`, status: 'done' as const, radius: 23 })));
   const arrows = event.j >= 0 ? [
     { id: 'left-pointer', from: { x: ARRAY_X + event.left * SLOT, y: ARRAY_Y - 48 }, to: { x: ARRAY_X + event.left * SLOT, y: ARRAY_Y - 6 }, text: `L=${event.left}`, kind: 'pointer' as const },
