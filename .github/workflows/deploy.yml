@@ -55,6 +55,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.PAGES_SOURCE_READ_TOKEN }}
         run: |
+          mkdir -p source/public/data
           count=$(gh api repos/fuck-algorithm/leetcode-239-sliding-window-maximum --jq .stargazers_count)
           printf '{"stargazers_count":%s}\n' "$count" > source/public/data/github-stars.json
           cp source/public/data/github-stars.json public/data/github-stars.json
